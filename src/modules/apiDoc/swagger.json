@@ -1,0 +1,110 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "library",
+        "description": "",
+        "version": "1.1.0"
+    },
+    "components": {
+        "securitySchemes": {
+            "Athorization": {
+                "type": "apiKey",
+                "name": "Athorization",
+                "scheme": "bearer",
+                "in": "header",
+                "decription": "user token from athorization : bearer token"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "all routes about user athentication"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register User",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "tania@gmail.com"
+                                    },
+                                    "fulName": {
+                                        "type": "string",
+                                        "example": "tania shafiee"
+                                    },
+                                    "universityId": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Tania@2026"
+                                    },
+                                    "media": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "fulName",
+                                    "universityId",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successfully registered"
+                    },
+                    "400": {
+                        "description": "Email or universityId already exist"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "login User",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "email": "tania@gmail.com",
+                                    "password": "tania@2026"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successfully login"
+                    },
+                    "400": {
+                        "description": "request body is not valid"
+                    }
+                }
+            }
+        }
+    }
+}
