@@ -7,7 +7,7 @@ export const multerStorage = (
     allowdTypes: RegExp = /jpeg|jpg|png|webp/
 ) => {
     if (!fs.existsSync(destination)) {
-        fs.mkdirSync(destination);
+        fs.mkdirSync(destination, { recursive: true });
     }
 
     const storage = multer.diskStorage({
