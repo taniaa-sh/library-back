@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import userModel from "@/models/User";
+import userModel from "../models/User";
 
 export default async (
     req: Request,

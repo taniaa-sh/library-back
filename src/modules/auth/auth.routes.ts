@@ -2,7 +2,7 @@ import express from "express";
 
 import { register, login } from "./auth.controller";
 
-import { multerStorage } from "@/middlewares/uploader";
+import { multerStorage } from "../../middlewares/uploader";
 
 const router = express.Router();
 

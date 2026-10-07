@@ -6,10 +6,6 @@
     "rootDir": ".",
     "outDir": "dist",
 
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-
     "ignoreDeprecations": "6.0",
 
     "esModuleInterop": true,

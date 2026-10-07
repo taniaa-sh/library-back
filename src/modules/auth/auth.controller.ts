@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
-import { successResponsse, errorResponsse } from "@/utils/responses";
+import { successResponsse, errorResponsse } from "../../utils/responses";
 import {
     registerValidationSchema,
     loginValidationSchema,
 } from "./auth.validator";
-import userModal from "@/models/User";
+import userModal from "../../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
