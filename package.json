@@ -3,7 +3,7 @@
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch server.ts",
-    "build": "tsc",
+    "build": "echo \"No build step\"",
     "start": "node dist/server.js"
   },
   "dependencies": {
