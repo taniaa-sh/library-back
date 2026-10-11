@@ -6,6 +6,8 @@ const authService = new AuthService();
 
 router.post('/register', async (req, res) => {
     try {
+        console.log(111111, req?.body)
+        
         const fullName = req.body?.fullName?.trim() || undefined
         const email = req.body?.email?.trim() || undefined
         const universityId = req.body?.universityId?.trim() || undefined
