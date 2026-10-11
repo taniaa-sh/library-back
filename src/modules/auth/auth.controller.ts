@@ -1,128 +1,73 @@
-import type { Request, Response } from "express";
-import { successResponsse, errorResponsse } from "../../utils/responses";
-import {
-    registerValidationSchema,
-    loginValidationSchema,
-} from "./auth.validator";
-import userModal from "../../models/User";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import express from 'express';
+import { AuthService } from './auth.service';
 
-interface RegisterBody {
-    email: string;
-    fulName: string;
-    universityId: string;
-    password: string;
-}
+const router = express.Router();
+const authService = new AuthService();
 
-interface LoginBody {
-    email: string;
-    password: string;
-}
-
-export const register = async (
-    req: Request<{}, {}, RegisterBody> & { file?: Express.Multer.File },
-    res: Response
-) => {
+router.post('/register', async (req, res) => {
     try {
-        const { email, fulName, universityId, password } = req.body;
+        const fullName = req.body?.fullName?.trim() || undefined
+        const email = req.body?.email?.trim() || undefined
+        const universityId = req.body?.universityId?.trim() || undefined
+        const password = req.body?.password?.trim() || undefined
 
-        await registerValidationSchema.validate(
-            { email, fulName, universityId, password },
-            { abortEarly: false }
-        );
-
-        const isExiestUser = await userModal.findOne({
-            $or: [{ universityId }, { email }],
-        });
-
-        if (isExiestUser) {
-            return errorResponsse(res, 400, "Email or universityId is already exist");
+        if (!fullName || fullName == '') {
+            return res.status(400).json({
+                error: "name is empty!"
+            })
         }
 
-        const isFirstUser = (await userModal.countDocuments()) === 0;
-        const role = isFirstUser ? "ADMIN" : "USER";
-        const hashedPassword = await bcrypt.hash(password, 10);
+        if (!email || email == '') {
+            return res.status(400).json({
+                error: "email is empty!"
+            })
+        }
 
-        const imagePath = req.file
-            ? `/univercityIdImage/${req.file.filename}`
-            : null;
+        if (!universityId || universityId == '') {
+            return res.status(400).json({
+                error: "username is empty!"
+            })
+        }
 
-        const registerUser = await userModal.create({
+        if (!password || password == '') {
+            return res.status(400).json({
+                error: "password is empty!"
+            })
+        }
+
+        const result = await authService.register(
+            fullName,
             email,
             universityId,
-            fulName,
-            password: hashedPassword,
-            role,
-            univercityIdImage: imagePath,
-        });
-
-        const jwtSecret = process.env.JWT_SECRET;
-        if (!jwtSecret) throw new Error("JWT_SECRET is not defined");
-
-        const accessToken = jwt.sign(
-            { id: registerUser._id, email: registerUser.email },
-            jwtSecret,
-            { expiresIn: "7d" }
+            password,
         );
 
-        return successResponsse(res, 200, {
-            accessToken,
-            user: registerUser,
-        });
-    } catch (err: unknown) {
-        console.log(err);
-        return errorResponsse(
-            res,
-            500,
-            err instanceof Error ? err.message : "Internal server error"
-        );
+        return res.json(result);
+    } catch (err: any) {
+        res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
     }
-};
+});
 
-export const login = async (
-    req: Request<{}, {}, LoginBody>,
-    res: Response
-) => {
+router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const email = req.body?.email?.trim() || undefined
+        const password = req.body?.password?.trim() || undefined
 
-        await loginValidationSchema.validate(
-            { email, password },
-            { abortEarly: false }
-        );
-
-        const user = await userModal.findOne({ email });
-
-        if (!user) {
-            return errorResponsse(res, 400, "this user not found");
+        if (!password || password == '') {
+            return res.status(400).json({
+                error: "password is empty!"
+            })
         }
 
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordMatch) {
-            return errorResponsse(res, 400, "password isnt match");
-        }
-
-        const jwtSecret = process.env.JWT_SECRET;
-        if (!jwtSecret) throw new Error("JWT_SECRET is not defined");
-
-        const accessToken = jwt.sign(
-            { id: user._id, email: user.email },
-            jwtSecret,
-            { expiresIn: "7d" }
+        const result = await authService.login(
+            email,
+            password,
         );
-        return successResponsse(res, 200, {
-            accessToken,
-            user,
-        });
 
-    } catch (err: unknown) {
-        console.log(err);
-        return errorResponsse(
-            res,
-            500,
-            err instanceof Error ? err.message : "Internal server error"
-        );
+        return res.json(result);
+    } catch (err: any) {
+        res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
     }
-};
+});
+
+export default router;
