@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
 
         if (!fullName || fullName == '') {
             return res.status(400).json({
-                error: "name is empty!"
+                error: "fullName is empty!"
             })
         }
 
