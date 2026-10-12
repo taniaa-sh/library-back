@@ -50,7 +50,7 @@ const UserSchema = new Schema<IUser>(
 
         univercityIdImage: {
             type: String,
-            required: false,
+            required: true,
         },
 
         currentToken: { 

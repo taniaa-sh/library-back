@@ -24,6 +24,7 @@ export class AuthService {
         email: string,
         universityId: string,
         password: string,
+        univercityIdImage: string
     ) {
         const existing = await this.userModel.findOne({
             $or: [{ email }, { universityId }]
@@ -49,6 +50,7 @@ export class AuthService {
             fullName,
             universityId,
             password: hashed,
+            univercityIdImage,
             role: "USER",
             verifyToken: token,
         });
