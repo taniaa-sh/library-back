@@ -2,8 +2,6 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { UserModel } from './auth.model';
 import { sign } from 'jsonwebtoken';
-import { UserType } from '../../utils/UserType';
-import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
