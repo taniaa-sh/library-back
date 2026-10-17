@@ -89,7 +89,9 @@ export class AuthService {
     }
 
     async getAll() {
-        return await this.userModel.find().exec();
+        const users = await this.userModel.find().select("-password -currentToken -univercityIdImage").exec();
+
+        return users;
     }
 
     async logout(userId: string | Types.ObjectId) {
