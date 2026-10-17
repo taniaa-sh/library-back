@@ -5,6 +5,11 @@ import { authMiddleware, AuthRequest } from '../../middlewares/jwtAuth';
 const router = express.Router();
 const authService = new AuthService();
 
+router.get('/getAll', async (req, res) => {
+    const result = await authService.getAll();
+
+    return res.json(result);
+});
 
 router.post('/register', async (req, res) => {
     try {

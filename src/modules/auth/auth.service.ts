@@ -88,6 +88,10 @@ export class AuthService {
         return { accessToken: token, isAdmin: user.role === "ADMIN" };
     }
 
+    async getAll() {
+        return await this.userModel.find().exec();
+    }
+
     async logout(userId: string | Types.ObjectId) {
         await this.userModel.findByIdAndUpdate(userId, { currentToken: null });
         return { success: true, message: "Logged out successfully" };
