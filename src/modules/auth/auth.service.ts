@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { UserModel } from './auth.model';
 import { sign } from 'jsonwebtoken';
+import { Types } from 'mongoose';
 
 dotenv.config();
 
@@ -85,5 +86,10 @@ export class AuthService {
         await user.save();
 
         return { accessToken: token, isAdmin: user.role === "ADMIN" };
+    }
+
+    async logout(userId: string | Types.ObjectId) {
+        await this.userModel.findByIdAndUpdate(userId, { currentToken: null });
+        return { success: true, message: "Logged out successfully" };
     }
 }

@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthService } from './auth.service';
+import { authMiddleware, AuthRequest } from '../../middlewares/jwtAuth';
 
 const router = express.Router();
 const authService = new AuthService();
@@ -78,6 +79,20 @@ router.post('/login', async (req, res) => {
         );
 
         return res.json(result);
+    } catch (err: any) {
+        res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
+    }
+});
+
+router.post('/logout', authMiddleware, async (req: AuthRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const logout = await authService.logout(req.user._id.toString());
+
+        return res.json(logout);
     } catch (err: any) {
         res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
     }
