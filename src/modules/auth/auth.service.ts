@@ -98,4 +98,23 @@ export class AuthService {
         await this.userModel.findByIdAndUpdate(userId, { currentToken: null });
         return { success: true, message: "Logged out successfully" };
     }
+
+    async resetPassword(userId: string, password: string) {
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            throw Object.assign(new Error("User not found"), {
+                status: 404,
+            });
+        }
+
+        user.password = await bcrypt.hash(password, 10);
+
+        await user.save();
+
+        return {
+            success: true,
+            message: "Password updated successfully",
+        };
+    }
 }

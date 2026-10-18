@@ -103,4 +103,43 @@ router.post('/logout', authMiddleware, async (req: AuthRequest, res) => {
     }
 });
 
+router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const password = req.body?.password?.trim() || undefined;
+        const confirmPass = req.body?.confirmPass?.trim() || undefined;
+
+        if (!password || !confirmPass) {
+            return res.status(400).json({
+                message: "Password and confirm password are required",
+            });
+        }
+
+        if (password !== confirmPass) {
+            return res.status(400).json({
+                message: "Passwords do not match",
+            });
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).{8,30}$/;
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                message: "Password does not meet the required criteria",
+            });
+        }
+
+        const result = await authService.resetPassword(
+            req.user._id.toString(),
+            password
+        );
+
+        return res.json(result);
+    } catch (err: any) {
+        res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
+    }
+})
+
 export default router;
