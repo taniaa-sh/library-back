@@ -76,16 +76,16 @@ export class BookService {
 
     async updateBook(
         id: number,
-        title: string,
-        author: string,
-        genre: string,
-        bookVideo: string,
-        bookPrimaryColor: string,
-        bookImage: string,
-        description: string,
-        bookPdf: string
+        title?: string,
+        author?: string,
+        genre?: string,
+        bookVideo?: string,
+        bookPrimaryColor?: string,
+        bookImage?: string,
+        description?: string,
+        bookPdf?: string
     ) {
-        const book = await this.bookModel.findOne({ id }).select("").exec();
+        const book = await this.bookModel.findOne({ id }).exec();
 
         if (!book) {
             const error = new Error('Book not found') as Error & {
@@ -95,16 +95,22 @@ export class BookService {
             throw error;
         }
 
-        book.title = title;
-        book.author = author;
-        book.genre = genre;
-        book.bookVideo = bookVideo;
-        book.bookPrimaryColor = bookPrimaryColor;
-        book.bookImage = bookImage;
-        book.description = description;
-        book.bookPdf = bookPdf;
+        if (title !== undefined) book.title = title;
+        if (author !== undefined) book.author = author;
+        if (genre !== undefined) book.genre = genre;
+        if (bookVideo !== undefined) book.bookVideo = bookVideo;
+        if (bookPrimaryColor !== undefined) {
+            book.bookPrimaryColor = bookPrimaryColor;
+        }
+        if (bookImage !== undefined) book.bookImage = bookImage;
+        if (description !== undefined) book.description = description;
+        if (bookPdf !== undefined) book.bookPdf = bookPdf;
 
         await book.save();
-        return { message: 'Book updated successfully' };
+
+        return {
+            message: 'Book updated successfully',
+            data: book,
+        };
     }
 }
