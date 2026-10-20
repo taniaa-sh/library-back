@@ -6,7 +6,7 @@ dotenv.config();
 export class BookService {
     private bookModel = BookModel;
 
-    async register(
+    async addBook(
         title: string,
         author: string,
         genre: string,

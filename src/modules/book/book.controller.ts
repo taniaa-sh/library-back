@@ -78,7 +78,7 @@ router.post('/addBook', async (req, res) => {
             });
         }
 
-        const result = await bookService.register(
+        const result = await bookService.addBook(
             title,
             author,
             genre,
