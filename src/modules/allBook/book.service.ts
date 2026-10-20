@@ -40,8 +40,8 @@ export class BookService {
     }
 
     async getAll() {
-        const users = await this.bookModel.find().exec();
+        const books = await this.bookModel.find().exec();
 
-        return users;
+        return books;
     }
 }
