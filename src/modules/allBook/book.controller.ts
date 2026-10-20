@@ -105,7 +105,7 @@ router.get('/getAll', async (req, res) => {
     return res.json(result);
 });
 
-router.get('/getById/:id', async (req, res) => {
+router.get('/getBookById/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
 
@@ -115,7 +115,7 @@ router.get('/getById/:id', async (req, res) => {
       });
     }
 
-    const result = await bookService.getBook(id);
+    const result = await bookService.getBookById(id);
 
     return res.status(200).json(result);
   } catch (err: any) {

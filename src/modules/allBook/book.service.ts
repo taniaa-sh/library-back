@@ -45,7 +45,7 @@ export class BookService {
         return books;
     }
 
-    async getBook(id: number) {
+    async getBookById(id: number) {
         const book = await this.bookModel.findOne({ id }).select("").exec();
 
         if (!book) {
