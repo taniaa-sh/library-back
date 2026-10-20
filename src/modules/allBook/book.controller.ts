@@ -145,4 +145,44 @@ router.delete('/deleteBook/:id', async (req, res) => {
   }
 });
 
+router.put('/updateBook/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({
+        message: 'Invalid book ID',
+      });
+    }
+
+    const title = req.body?.title?.trim() || undefined;
+    const author = req.body?.author?.trim() || undefined;
+    const genre = req.body?.genre?.trim() || undefined;
+    const bookVideo = req.body?.bookVideo?.trim() || undefined;
+    const bookPrimaryColor =
+      req.body?.bookPrimaryColor?.trim() || undefined;
+    const bookImage = req.body?.bookImage?.trim() || undefined;
+    const description = req.body?.description?.trim() || undefined;
+    const bookPdf = req.body?.bookPdf?.trim() || undefined;
+
+    const result = await bookService.updateBook(
+      id,
+      title,
+      author,
+      genre,
+      bookVideo,
+      bookPrimaryColor,
+      bookImage,
+      description,
+      bookPdf
+    );
+
+    return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(err?.status || 500).json({
+      message: err?.message || 'Internal Server Error',
+    });
+  }
+});
+
 export default router;

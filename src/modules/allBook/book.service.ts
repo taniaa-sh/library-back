@@ -73,4 +73,38 @@ export class BookService {
         await this.bookModel.deleteOne({ id });
         return { message: 'Book deleted successfully' };
     }
+
+    async updateBook(
+        id: number,
+        title: string,
+        author: string,
+        genre: string,
+        bookVideo: string,
+        bookPrimaryColor: string,
+        bookImage: string,
+        description: string,
+        bookPdf: string
+    ) {
+        const book = await this.bookModel.findOne({ id }).select("").exec();
+
+        if (!book) {
+            const error = new Error('Book not found') as Error & {
+                status?: number;
+            };
+            error.status = 404;
+            throw error;
+        }
+
+        book.title = title;
+        book.author = author;
+        book.genre = genre;
+        book.bookVideo = bookVideo;
+        book.bookPrimaryColor = bookPrimaryColor;
+        book.bookImage = bookImage;
+        book.description = description;
+        book.bookPdf = bookPdf;
+
+        await book.save();
+        return { message: 'Book updated successfully' };
+    }
 }
