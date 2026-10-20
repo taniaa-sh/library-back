@@ -4,6 +4,7 @@ import middlewaresException from './middlewares/exception'
 import middlewares from './middlewares/middlewares';
 import routers from './modules';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
@@ -11,6 +12,11 @@ app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use(cors());
+
+app.use(
+    '/uploads',
+    express.static(path.join(process.cwd(), 'public', 'uploads'))
+);
 
 middlewares(app);
 routers(app);
