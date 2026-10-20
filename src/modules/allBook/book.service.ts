@@ -58,4 +58,19 @@ export class BookService {
 
         return book;
     }
+
+    async deleteBook(id: number) {
+        const book = await this.bookModel.findOne({ id }).select("").exec();
+
+        if (!book) {
+            const error = new Error('Book not found') as Error & {
+                status?: number;
+            };
+            error.status = 404;
+            throw error;
+        }
+
+        await this.bookModel.deleteOne({ id });
+        return { message: 'Book deleted successfully' };
+    }
 }
