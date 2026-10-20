@@ -40,7 +40,7 @@ export class BookService {
     }
 
     async getAll() {
-        const books = await this.bookModel.find().exec();
+        const books = await this.bookModel.find().select("-bookVideo -bookImage -bookPdf").exec();
 
         return books;
     }
