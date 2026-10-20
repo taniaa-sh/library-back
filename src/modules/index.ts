@@ -1,6 +1,6 @@
 import { Router, Express } from "express";
-import { authMiddleware } from "../middlewares/jwtAuth";
 import authRoutes from "../modules/auth/auth.routes";
+import addBookRoutes from "../modules/allBook/book.routes";
 
 const routers = (app: Express) => {
     // Create a base router for /api
@@ -11,6 +11,7 @@ const routers = (app: Express) => {
 
     // Auth routes
     apiRouter.use("/auth", authRoutes);
+    apiRouter.use("/allBook", addBookRoutes);
 
     // Mount /api prefix
     app.use("/api", apiRouter);
