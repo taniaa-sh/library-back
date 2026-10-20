@@ -146,6 +146,8 @@ router.delete('/deleteBook/:id', async (req, res) => {
 });
 
 router.put('/updateBook/:id', async (req, res) => {
+    console.log('Request body:', req.body);
+    console.log('Author received:', req.body?.author);
     try {
         const id = Number(req.params.id);
 
