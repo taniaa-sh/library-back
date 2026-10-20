@@ -105,4 +105,25 @@ router.get('/getAll', async (req, res) => {
     return res.json(result);
 });
 
+router.get('/getById/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({
+        message: 'Invalid book ID',
+      });
+    }
+
+    const result = await bookService.getBook(id);
+
+    return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(err?.status || 500).json({
+      message: err?.message || 'Internal Server Error',
+    });
+  }
+});
+
+
 export default router;

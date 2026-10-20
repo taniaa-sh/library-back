@@ -44,4 +44,18 @@ export class BookService {
 
         return books;
     }
+
+    async getBook(id: number) {
+        const book = await this.bookModel.findOne({ id }).select("").exec();
+
+        if (!book) {
+            const error = new Error('Book not found') as Error & {
+                status?: number;
+            };
+            error.status = 404;
+            throw error;
+        }
+
+        return book;
+    }
 }
