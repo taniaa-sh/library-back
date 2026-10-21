@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use(cors(
     {
-        origin: 'https://library.taniashafiee.ir/ , http://localhost:3000',
+        origin: 'https://library.taniashafiee.ir/ , http://localhost:3001',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,
