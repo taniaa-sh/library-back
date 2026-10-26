@@ -70,4 +70,10 @@ router.post(
     }
 );
 
+router.get('/getAll', async (req, res) => {
+    const result = await reviewService.getAll();
+
+    return res.json(result);
+});
+
 export default router;

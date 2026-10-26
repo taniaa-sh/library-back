@@ -32,7 +32,16 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
         }
 
         // 3. Find user in database and check token matches
-        const user = await UserModel.findOne({ _id: decoded.id, currentToken: token });
+        console.log("Authorization exists:", !!authHeader);
+        console.log("Token parts:", token.split(".").length);
+        console.log("Decoded user ID:", decoded.id);
+
+        const user = await UserModel.findOne({
+            _id: decoded.id,
+            currentToken: token,
+        });
+
+        console.log("User found:", !!user);
         if (!user) {
             return res.status(401).json({ status: 401, message: "User not found or token invalid" });
         }
