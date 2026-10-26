@@ -15,7 +15,7 @@ app.use(
     cors({
         origin: [
             'https://library.taniashafiee.ir',
-            'http://localhost:3001',
+            'http://localhost:3004',
         ],
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         credentials: true,
