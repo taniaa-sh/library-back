@@ -51,8 +51,10 @@ export class ReviewService {
     }
 
     async getAll() {
-        const reviews = await this.reviewModel.find().select("").exec();
-
-        return reviews;
+        return this.reviewModel
+            .find()
+            .populate("userId", "fullName")
+            .sort({ createdAt: -1 })
+            .exec();
     }
 }
