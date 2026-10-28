@@ -27,7 +27,8 @@ router.post(
                 !comment
             ) {
                 return res.status(400).json({
-                    message: "bookId, rating and comment are required",
+                    success: false,
+                    message,
                 });
             }
 
@@ -39,6 +40,7 @@ router.post(
             );
 
             return res.status(200).json({
+                success: true,
                 message: "Review submitted successfully",
                 data: result,
             });
