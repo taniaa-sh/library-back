@@ -1,24 +1,24 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose from "mongoose";
 
 export interface IReview extends mongoose.Document {
-    _id: Types.ObjectId;
-    bookId: Types.ObjectId;
-    userId: Types.ObjectId;
+    _id: mongoose.Types.ObjectId;
+    bookId: number;
+    userId: mongoose.Types.ObjectId;
     rating: number;
     comment: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
-const ReviewModel = new Schema<IReview>(
+const ReviewSchema = new mongoose.Schema<IReview>(
     {
         bookId: {
-            type: Schema.Types.ObjectId,
+            type: Number,
             required: true,
             ref: "Book",
         },
         userId: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "User",
         },
@@ -32,7 +32,7 @@ const ReviewModel = new Schema<IReview>(
             type: String,
             required: true,
             trim: true,
-            maxLength: 1000,
+            maxlength: 1000,
         },
     },
     {
@@ -40,6 +40,6 @@ const ReviewModel = new Schema<IReview>(
     }
 );
 
-ReviewModel.index({ bookId: 1, userId: 1 }, { unique: true });
+ReviewSchema.index({ bookId: 1, userId: 1 }, { unique: true });
 
-export default mongoose.model<IReview>("Review", ReviewModel);
+export default mongoose.model<IReview>("Review", ReviewSchema);

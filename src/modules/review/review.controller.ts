@@ -72,10 +72,31 @@ router.post(
     }
 );
 
-router.get('/getAll', async (req, res) => {
-    const result = await reviewService.getAll();
+router.get("/getAll/:bookId", async (req, res) => {
+    try {
+        const bookId = Number(req.params.bookId);
 
-    return res.json(result);
+        if (!Number.isInteger(bookId) || bookId <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid bookId",
+            });
+        }
+
+        const result = await reviewService.getAll(bookId);
+
+        return res.status(200).json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to get reviews",
+        });
+    }
 });
 
 export default router;
