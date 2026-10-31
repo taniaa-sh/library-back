@@ -199,4 +199,15 @@ export class AuthService {
         };
     }
 
+    async getProfile(userId: string) {
+        const user = await UserModel.findById(userId).select(
+            "-password -currentToken -univercityIdImage"
+        );
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return user;
+    }
 }
