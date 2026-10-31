@@ -118,22 +118,6 @@ export class AuthService {
         };
     }
 
-
-    async getProfile(userId: string) {
-        const user = await this.userModel
-            .findById(userId)
-            .select("-password -currentToken -univercityIdImage")
-            .exec();
-
-        if (!user) {
-            throw Object.assign(new Error("User not found"), {
-                status: 404,
-            });
-        }
-
-        return user;
-    }
-
     async updateProfile(
         userId: string,
         data: {

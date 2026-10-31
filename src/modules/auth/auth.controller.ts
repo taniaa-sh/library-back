@@ -142,28 +142,6 @@ router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
     }
 })
 
-
-router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
-    try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Unauthorized",
-            });
-        }
-
-        const user = await authService.getProfile(
-            req.user._id.toString()
-        );
-
-        return res.json(user);
-    } catch (err: any) {
-        return res.status(err?.status || 500).json({
-            message: "Internal Server Error",
-            error: err.message,
-        });
-    }
-});
-
 router.put("/update-profile", authMiddleware, async (req: AuthRequest, res) => {
     try {
         if (!req.user) {
