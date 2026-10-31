@@ -143,7 +143,7 @@ router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
 })
 
 
-router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
+router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
     try {
         if (!req.user) {
             return res.status(401).json({
