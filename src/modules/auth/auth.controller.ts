@@ -151,7 +151,7 @@ router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
             });
         }
 
-        const user = await authService.getProfile(
+        const user  = await authService.getProfile(
             req.user._id.toString()
         );
 
