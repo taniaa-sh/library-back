@@ -142,7 +142,6 @@ router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
     }
 })
 
-
 router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
     try {
         if (!req.user) {
@@ -199,6 +198,5 @@ router.put("/update-profile", authMiddleware, async (req: AuthRequest, res) => {
         });
     }
 });
-
 
 export default router;
