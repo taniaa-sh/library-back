@@ -1,3 +1,4 @@
+
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface IUser extends mongoose.Document {
@@ -6,9 +7,11 @@ export interface IUser extends mongoose.Document {
     email: string;
     fullName: string;
     universityId: string;
+    university?: string | null;
     password: string;
     role: "ADMIN" | "USER";
     univercityIdImage: string;
+    profileImage?: string | null;
     currentToken?: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -19,43 +22,46 @@ const UserSchema = new Schema<IUser>(
         id: {
             type: Number,
             required: true,
-            unique: true
+            unique: true,
         },
         email: {
             type: String,
             required: true,
             unique: true,
         },
-
         fullName: {
             type: String,
             required: true,
         },
-
         universityId: {
             type: String,
             required: true,
         },
-
+        university: {
+            type: String,
+            default: null,
+            trim: true,
+        },
         password: {
             type: String,
             required: true,
         },
-
         role: {
             type: String,
             enum: ["ADMIN", "USER"],
             default: "USER",
         },
-
         univercityIdImage: {
             type: String,
             required: true,
         },
-
-        currentToken: { 
-            type: String, 
-            default: null 
+        profileImage: {
+            type: String,
+            default: null,
+        },
+        currentToken: {
+            type: String,
+            default: null,
         },
     },
     {
@@ -63,7 +69,6 @@ const UserSchema = new Schema<IUser>(
     }
 );
 
-// Index for fast lookups by token
 UserSchema.index({ currentToken: 1 }, { sparse: true });
 
 export const UserModel = mongoose.model<IUser>("User", UserSchema);

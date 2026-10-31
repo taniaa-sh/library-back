@@ -117,4 +117,102 @@ export class AuthService {
             message: "Password updated successfully",
         };
     }
+
+
+    async getProfile(userId: string) {
+        const user = await this.userModel
+            .findById(userId)
+            .select("-password -currentToken -univercityIdImage")
+            .exec();
+
+        if (!user) {
+            throw Object.assign(new Error("User not found"), {
+                status: 404,
+            });
+        }
+
+        return user;
+    }
+
+    async updateProfile(
+        userId: string,
+        data: {
+            fullName?: string;
+            email?: string;
+            universityId?: string;
+            university?: string | null;
+            profileImage?: string | null;
+        }
+    ) {
+        const user = await this.userModel.findById(userId);
+
+        if (!user) {
+            throw Object.assign(new Error("User not found"), {
+                status: 404,
+            });
+        }
+
+        if (data.email !== undefined) {
+            const email = data.email.trim();
+
+            const existingEmail = await this.userModel.findOne({
+                email,
+                _id: { $ne: user._id },
+            });
+
+            if (existingEmail) {
+                throw Object.assign(new Error("Email already exists"), {
+                    status: 400,
+                });
+            }
+
+            user.email = email;
+        }
+
+        if (data.universityId !== undefined) {
+            const universityId = data.universityId.trim();
+
+            const existingId = await this.userModel.findOne({
+                universityId,
+                _id: { $ne: user._id },
+            });
+
+            if (existingId) {
+                throw Object.assign(new Error("Student ID already exists"), {
+                    status: 400,
+                });
+            }
+
+            user.universityId = universityId;
+        }
+
+        if (data.fullName !== undefined) {
+            user.fullName = data.fullName.trim();
+        }
+
+        if (data.university !== undefined) {
+            user.university = data?.university?.trim() || null;
+        }
+
+        if (data.profileImage) {
+            user.profileImage = data.profileImage;
+        }
+
+        await user.save();
+
+        return {
+            success: true,
+            message: "Profile updated successfully",
+            user: {
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                universityId: user.universityId,
+                university: user.university,
+                profileImage: user.profileImage,
+                role: user.role,
+            },
+        };
+    }
+
 }

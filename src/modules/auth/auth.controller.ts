@@ -142,4 +142,63 @@ router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
     }
 })
 
+
+router.get("/me", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
+
+        const user = await authService.getProfile(
+            req.user._id.toString()
+        );
+
+        return res.json(user);
+    } catch (err: any) {
+        return res.status(err?.status || 500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+});
+
+router.put("/update-profile", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
+
+        const {
+            fullName,
+            email,
+            universityId,
+            university,
+            profileImage,
+        } = req.body;
+
+        const result = await authService.updateProfile(
+            req.user._id.toString(),
+            {
+                fullName,
+                email,
+                universityId,
+                university,
+                profileImage,
+            }
+        );
+
+        return res.json(result);
+    } catch (err: any) {
+        return res.status(err?.status || 500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+});
+
+
 export default router;
