@@ -163,7 +163,7 @@ router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
     }
 });
 
-router.put("/update-profile", authMiddleware, async (req: AuthRequest, res) => {
+router.post("/update-profile", authMiddleware, async (req: AuthRequest, res) => {
     try {
         if (!req.user) {
             return res.status(401).json({
