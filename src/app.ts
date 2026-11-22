@@ -6,6 +6,11 @@ import cors from 'cors';
 import path from 'path';
 import middlewares from './middlewares/middlewares';
 
+const allowedOrigins = [
+    'https://library.taniashafiee.ir',
+    'http://localhost:3004',
+];
+
 const app = express();
 
 app.use(express.json({ limit: '100mb' }));
@@ -13,12 +18,21 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use(
     cors({
-        origin: [
-            'https://library.taniashafiee.ir',
-            'http://localhost:3004',
+        origin: allowedOrigins,
+        methods: [
+            'GET',
+            'HEAD',
+            'PUT',
+            'PATCH',
+            'POST',
+            'DELETE',
+            'OPTIONS',
         ],
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-        credentials: true,
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+        ],
+        credentials: false,
         optionsSuccessStatus: 204,
     })
 );
