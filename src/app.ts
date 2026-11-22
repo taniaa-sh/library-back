@@ -9,7 +9,6 @@ import middlewares from './middlewares/middlewares';
 const allowedOrigins = [
     'https://library.taniashafiee.ir',
     'http://localhost:3004',
-    'http://localhost',
 ];
 
 const app = express();
