@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import { UserModel } from './auth.model';
 import { sign } from 'jsonwebtoken';
 import { Types } from 'mongoose';
+import { randomBytes } from 'crypto';
+import { MailService } from '../../services/mail.service';
 
 dotenv.config();
 
@@ -11,6 +13,7 @@ const jwtSecret = process.env.JWT_SECRET || 'secret';
 export class AuthService {
 
     private loginSessions = new Map<string, { userId: string; secret: string }>();
+    private mailService = new MailService();
 
     private userModel = UserModel;
 
@@ -209,5 +212,39 @@ export class AuthService {
         }
 
         return user;
+    }
+
+    async forgetPassword(
+        account: string,
+    ) {
+        const user = await this.userModel.findOne({
+            $or: [
+                { email: account },
+                { username: account },
+                { phone: account }
+            ]
+        }).exec();
+
+        if (!user) throw { status: 401, message: 'Invalid credentials: user not found.' };
+
+        const buffer = randomBytes(20);
+        const resetToken = buffer.toString('hex');
+
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = new Date(Date.now() + 3600_000);
+        await user.save();
+
+        const resetLink = `${process.env.BASE_URL}/auth/reset-pass/${resetToken}`;
+
+        await this.mailService.sendPasswordReset({
+            to: user.email,
+            name: user.fullName,
+            link: resetLink,
+        });
+
+        return {
+            message: "ResetReset Password Was Emailed Successfully",
+            link: resetLink
+        }
     }
 }

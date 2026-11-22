@@ -13,6 +13,9 @@ export interface IUser extends mongoose.Document {
     univercityIdImage: string;
     profileImage?: string | null;
     currentToken?: string | null;
+    resetPasswordToken?: string | null;
+    resetPasswordExpires?: Date | null;
+
     createdAt: Date;
     updatedAt: Date;
 }
@@ -28,6 +31,8 @@ const UserSchema = new Schema<IUser>(
             type: String,
             required: true,
             unique: true,
+            trim: true,
+            lowercase: true,
         },
         fullName: {
             type: String,
@@ -61,6 +66,15 @@ const UserSchema = new Schema<IUser>(
         },
         currentToken: {
             type: String,
+            default: null,
+        },
+
+        resetPasswordToken: {
+            type: String,
+            default: null,
+        },
+        resetPasswordExpires: {
+            type: Date,
             default: null,
         },
     },

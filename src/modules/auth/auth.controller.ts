@@ -103,6 +103,26 @@ router.post('/logout', authMiddleware, async (req: AuthRequest, res) => {
     }
 });
 
+router.post('/forgetPassword', async (req, res) => {
+    try {
+        const account = req.body?.account?.trim() || undefined
+
+        if (!account || account == '') {
+            return res.status(400).json({
+                error: "account is empty!"
+            })
+        }
+
+        const result = await authService.forgetPassword(
+            account,
+        );
+
+        return res.json(result);
+    } catch (err: any) {
+        res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
+    }
+});
+
 router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
     try {
         if (!req.user) {
@@ -150,7 +170,7 @@ router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
             });
         }
 
-        const user  = await authService.getProfile(
+        const user = await authService.getProfile(
             req.user._id.toString()
         );
 
