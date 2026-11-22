@@ -1,6 +1,7 @@
+
 import express from 'express';
-import middleware404 from './middlewares/404'
-import middlewaresException from './middlewares/exception'
+import middleware404 from './middlewares/404';
+import middlewaresException from './middlewares/exception';
 import middlewares from './middlewares/middlewares';
 import routers from './modules';
 import cors from 'cors';
@@ -8,20 +9,32 @@ import path from 'path';
 
 const app = express();
 
-app.use(express.json({ limit: '100mb' }));
-app.use(express.urlencoded({ extended: true, limit: '100mb' }));
-
 app.use(
     cors({
         origin: [
             'https://library.taniashafiee.ir',
             'http://localhost:3004',
         ],
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        methods: [
+            'GET',
+            'HEAD',
+            'PUT',
+            'PATCH',
+            'POST',
+            'DELETE',
+            'OPTIONS',
+        ],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+        ],
         credentials: true,
         optionsSuccessStatus: 204,
     })
 );
+
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use(
     '/uploads',
