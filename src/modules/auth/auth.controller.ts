@@ -123,44 +123,33 @@ router.post('/forgetPassword', async (req, res) => {
     }
 });
 
-router.post('reset-password', authMiddleware, async (req: AuthRequest, res) => {
+router.post('/updatePassword', async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-        const password = req.body?.password?.trim() || undefined;
-        const confirmPass = req.body?.confirmPass?.trim() || undefined;
+        const newPassword = req.body?.newPassword?.trim() || undefined
+        const resetPasswordToken = req.body?.resetPasswordToken?.trim() || undefined
 
-        if (!password || !confirmPass) {
+        if (!newPassword || newPassword == '') {
             return res.status(400).json({
-                message: "Password and confirm password are required",
-            });
+                error: "newPassword is empty!"
+            })
         }
 
-        if (password !== confirmPass) {
+        if (!resetPasswordToken || resetPasswordToken == '') {
             return res.status(400).json({
-                message: "Passwords do not match",
-            });
+                error: "resetPasswordToken is empty!"
+            })
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).{8,30}$/;
-
-        if (!passwordRegex.test(password)) {
-            return res.status(400).json({
-                message: "Password does not meet the required criteria",
-            });
-        }
-
-        const result = await authService.resetPassword(
-            req.user._id.toString(),
-            password
+        const result = await authService.updatePassword(
+            newPassword,
+            resetPasswordToken,
         );
 
         return res.json(result);
     } catch (err: any) {
         res.status(err?.status || 500).json({ message: "Internal Server Error", error: err.message });
     }
-})
+});
 
 router.get("/profile", authMiddleware, async (req: AuthRequest, res) => {
     try {

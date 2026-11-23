@@ -234,7 +234,7 @@ export class AuthService {
         user.resetPasswordExpires = new Date(Date.now() + 3600_000);
         await user.save();
 
-        const resetLink = `${process.env.BASE_URL}/auth/reset-pass/${resetToken}`;
+        const resetLink = `${process.env.BASE_URL}/auth/reset-pass?token=${resetToken}`;
 
         await this.mailService.sendPasswordReset({
             to: user.email,
@@ -246,5 +246,28 @@ export class AuthService {
             message: "ResetReset Password Was Emailed Successfully",
             link: resetLink
         }
+    }
+
+     async updatePassword(
+        newPassword: string,
+        resetPasswordToken: string,
+    ) {
+        const user = await this.userModel.findOne({
+            resetPasswordToken,
+            resetPasswordExpires: { $gt: Date.now() },
+        }).exec();
+
+        if (!user) throw { status: 401, message: 'Invalid credentials: user not found.' };
+
+        const hashed = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashed;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
+        await user.save();
+
+        return {
+            message: 'Your password has been updated successfully.',
+        };
     }
 }
