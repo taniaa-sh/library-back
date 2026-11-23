@@ -225,16 +225,28 @@ export class AuthService {
             ]
         }).exec();
 
-        if (!user) throw { status: 401, message: 'Invalid credentials: user not found.' };
+        if (!user) {
+            throw {
+                status: 401,
+                message: "Invalid credentials: user not found.",
+            };
+        }
 
-        const buffer = randomBytes(20);
-        const resetToken = buffer.toString('hex');
+        const resetToken = randomBytes(32).toString("hex");
 
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpires = new Date(Date.now() + 3600_000);
+
         await user.save();
 
-        const resetLink = `${process.env.BASE_URL}/auth/reset-pass?token=${resetToken}`;
+        const baseUrl = process.env.BASE_URL?.replace(/\/+$/, "");
+
+        if (!baseUrl) {
+            throw new Error("BASE_URL is not configured.");
+        }
+
+        const resetLink =
+            `${baseUrl}/auth/reset-pass?token=${encodeURIComponent(resetToken)}`;
 
         await this.mailService.sendPasswordReset({
             to: user.email,
@@ -243,12 +255,11 @@ export class AuthService {
         });
 
         return {
-            message: "ResetReset Password Was Emailed Successfully",
-            link: resetLink
-        }
+            message: "Password reset email sent successfully.",
+        };
     }
 
-     async updatePassword(
+    async updatePassword(
         newPassword: string,
         resetPasswordToken: string,
     ) {
