@@ -113,4 +113,21 @@ export class BookService {
             data: book,
         };
     }
+
+async getRecentlyAddedBooks() {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const books = await this.bookModel
+        .find({
+            createdAt: {
+                $gte: oneMonthAgo,
+                $lte: new Date(),
+            },
+        })
+        .sort({ createdAt: -1 })
+        .exec();
+
+    return books;
+}
 }

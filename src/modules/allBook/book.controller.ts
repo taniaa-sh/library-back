@@ -180,4 +180,20 @@ router.put('/updateBook/:id', async (req, res) => {
     }
 });
 
+router.get('/recently-added', async (req, res) => {
+    try {
+        const result = await bookService.getRecentlyAddedBooks();
+
+        return res.status(200).json({
+            success: true,
+            count: result.length,
+            data: result,
+        });
+    } catch (err: any) {
+        return res.status(err?.status || 500).json({
+            message: err?.message || 'Internal Server Error',
+        });
+    }
+});
+
 export default router;
