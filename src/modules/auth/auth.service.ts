@@ -281,4 +281,66 @@ export class AuthService {
             message: 'Your password has been updated successfully.',
         };
     }
+
+    async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+) {
+    const user = await this.userModel.findById(userId).exec();
+
+    if (!user) {
+        throw Object.assign(new Error("User not found"), {
+            status: 404,
+        });
+    }
+
+    if (!user.password) {
+        throw Object.assign(new Error("No password set for this account"), {
+            status: 400,
+        });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password
+    );
+
+    if (!isPasswordValid) {
+        throw Object.assign(new Error("Current password is incorrect"), {
+            status: 400,
+        });
+    }
+
+    if (newPassword.length < 8) {
+        throw Object.assign(new Error("Password must be at least 8 characters"), {
+            status: 400,
+        });
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw Object.assign(new Error("New passwords do not match"), {
+            status: 400,
+        });
+    }
+
+    if (currentPassword === newPassword) {
+        throw Object.assign(new Error("New password must be different from current password"), {
+            status: 400,
+        });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await user.save();
+
+    return {
+        success: true,
+        message: "Password changed successfully",
+    };
+}
 }

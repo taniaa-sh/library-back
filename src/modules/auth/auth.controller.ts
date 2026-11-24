@@ -208,4 +208,50 @@ router.post("/update-profile", authMiddleware, async (req: AuthRequest, res) => 
     }
 });
 
+router.post("/changePassword", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const {
+            currentPassword,
+            newPassword,
+            confirmPassword,
+        } = req.body || {};
+
+        if (
+            typeof currentPassword !== "string" ||
+            !currentPassword ||
+            typeof newPassword !== "string" ||
+            !newPassword ||
+            typeof confirmPassword !== "string" ||
+            !confirmPassword
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "All password fields are required",
+            });
+        }
+
+        const result = await authService.changePassword(
+            req.user._id.toString(),
+            currentPassword,
+            newPassword,
+            confirmPassword
+        );
+
+        return res.status(200).json(result);
+    } catch (err: any) {
+        return res.status(err?.status || 500).json({
+            success: false,
+            message: err?.message || "Internal Server Error",
+        });
+    }
+}
+);
+
 export default router;
